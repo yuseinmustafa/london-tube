@@ -1,0 +1,1843 @@
+from kivy.app import App 
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.uix.image import Image
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.anchorlayout import AnchorLayout
+from kivy.core.window import Window
+from kivy_garden.mapview import MapView, MapMarker
+from kivy.uix.button import ButtonBehavior
+from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+import subprocess
+import requests
+import json
+import sqlite3
+
+
+
+class MyImageButton1(Image):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.label = Label(text="", size_hint=(None, None), pos=self.pos)
+        self.add_widget(self.label)
+        
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            subprocess.Popen(['python', 'oysterDesign.py'])
+            
+
+class MyImageButton2(Image):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.label = Label(text="", size_hint=(None, None), pos=self.pos)
+        self.add_widget(self.label)
+        
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            subprocess.Popen(['python', 'assets/arrivals.py'])
+            
+class MyImageButton3(Image):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.label = Label(text="", size_hint=(None, None), pos=self.pos)
+        self.add_widget(self.label)
+        
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            subprocess.Popen(['python', 'assets/status.py'])
+            
+class MyImageButton4(Image):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.label = Label(text="", size_hint=(None, None), pos=self.pos)
+        self.add_widget(self.label)
+        
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            subprocess.Popen(['python', 'assets/shortest.py'])
+            
+class MyImageButton5(Image):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.label = Label(text="", size_hint=(None, None), pos=self.pos)
+        self.add_widget(self.label)
+        
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            subprocess.Popen(['python', 'assets/arrivalsForStation.py'])
+            
+            
+
+class Main(App):
+    def build(self):
+        
+        window_width, window_height = Window.size
+        self.layout = GridLayout(cols=1, size_hint=(0.6, 0.7), pos_hint={"center_x": 0.5, "center_y": 0.5}) 
+        self.layout.size_hint = (0.6, 0.7)
+        self.layout.pos_hint = {"center_x": 0.5, "center_y": 0.5}
+        
+       
+
+  
+        self.label = Label(text=" ", font_size=50)
+        label_width, label_height = self.label.texture_size
+        centre_x = (window_height - label_width) / 2
+        centre_y = (window_height - label_height) / 2
+        self.label.pos = (centre_x, centre_y
+                          )
+        self.layout.add_widget(self.label)
+        
+        self.arrival = Label(text="")
+        self.layout.add_widget(self.arrival)
+        
+        import requests
+        import json
+
+        url = "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCbl67m1ACMuKyTCKOklvSD7cVai79PAqM"
+
+        payload={}
+        headers = {}
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        #print(response.text)
+
+        parse = json.loads(response.text) 
+        my_lat = parse['location']['lat'] 
+        my_lon = parse['location']['lng'] 
+                
+    
+        map_view = MapView(lat=my_lat, lon=my_lon, zoom=13)
+        map_view.size_hint = (None, None)
+        map_view.size = (200, 200)
+
+        map_view.map_source = "osm"
+        map_marker = MapMarker()
+        map_marker.lat = 51.591134347808065
+        map_marker.lon = -0.09932547270686361
+        map_marker.source = "assets/mapMarker.png"
+        map_marker.size = (45, 45)
+        map_view.add_widget(map_marker)
+        self.layout.add_widget(map_view)
+        
+        
+        
+       
+        new5 = MyImageButton5(source='assets/arrivalsForStation.png', size_hint=(0.5, 0.5), pos_hint={"center_x": 0.5, "center_y": 0.5})
+        new = MyImageButton1(source='assets/picture.png', size_hint=(0.5, 0.5), pos_hint={"center_x": 0.5, "center_y": 0.5})
+        new1 = MyImageButton2(source='assets/arrivals.png', size_hint=(0.5, 0.5), pos_hint={"center_x": 0.5, "center_y": 0.5})
+        new3 = MyImageButton3(source='assets/lineStatusButton.png', size_hint=(0.5, 0.5), pos_hint={"center_x": 0.5, "center_y": 0.5})
+        new4 = MyImageButton4(source='assets/journeyPlanner.png', size_hint=(0.5, 0.5), pos_hint={"center_x": 0.5, "center_y": 0.5})
+        
+        
+        
+        new5.size_hint = (None, None)
+        new5.size = (150, 150)
+        
+        new.size_hint = (None, None)
+        new.size = (150, 150)
+        
+        new1.size_hint = (None, None)
+        new1.size = (150, 150)
+        
+        new3.size_hint = (None, None)
+        new3.size = (150, 150)
+        
+        new4.size_hint = (None, None)
+        new4.size = (150, 150)
+        
+       
+        
+        
+        
+        
+        self.layout.add_widget(new)
+        self.layout.add_widget(new1)
+        self.layout.add_widget(new3)
+        self.layout.add_widget(new4)
+        self.layout.add_widget(new5)
+  
+
+        def on_window_resize(self, window, width, height):
+            self.layout.size_hint = (0.6, 0.7)
+            self.layout.pos_hint = {"center_x": 0.5, "center_y": 0.5}
+            
+        Window.bind(on_resize=on_window_resize)
+
+
+        
+
+    
+        self.callBack()
+       
+        
+        return self.layout
+       
+    
+    def callBack(self):
+        import math
+     
+
+# Define the haversine formula function
+        def haversine(lat1, lon1, lat2, lon2):
+            R = 6371  # Earth's radius in kilometers
+            dLat = math.radians(lat2 - lat1)
+            dLon = math.radians(lon2 - lon1)
+            lat1 = math.radians(lat1)
+            lat2 = math.radians(lat2)
+            a = math.sin(dLat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dLon/2)**2
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+            d = R * c
+            return d
+
+       
+
+        stations = [{'lat': 51.5028, 'lon': -0.2801, 'name': 'Acton Town'},
+        {'lat': 51.5143, 'lon': -0.0755, 'name': 'Aldgate'},
+        {'lat': 51.5154, 'lon': -0.0726, 'name': 'Aldgate East'},
+        {'lat': 51.5107, 'lon': -0.013, 'name': 'All Saints'},
+        {'lat': 51.5407, 'lon': -0.2997, 'name': 'Alperton'},
+        {'lat': 51.5322, 'lon': -0.1058, 'name': 'Angel'},
+        {'lat': 51.5653, 'lon': -0.1353, 'name': 'Archway'},
+        {'lat': 51.6164, 'lon': -0.1331, 'name': 'Arnos Grove'},
+
+        {'lat': 51.5586, 'lon': -0.1059, 'name': 'Arsenal'},
+        {'lat': 51.5226, 'lon': -0.1571, 'name': 'Baker Street'},
+        {'lat': 51.4431, 'lon': -0.1525, 'name': 'Balham'},
+        {'lat': 51.5133, 'lon': -0.0886, 'name': 'Bank'},
+        {'lat': 51.5204, 'lon': -0.0979, 'name': 'Barbican'},
+        {'lat': 51.5396, 'lon': 0.081, 'name': 'Barking'},
+        {'lat': 51.5856, 'lon': 0.0887, 'name': 'Barkingside'},
+        {'lat': 51.4905, 'lon': -0.2139, 'name': 'Barons Court'},
+        {'lat': 51.5148, 'lon': 0.0613, 'name': 'Beckton'} ,
+        {'lat': 51.5087, 'lon': 0.055, 'name': 'Beckton Park'},
+        {'lat': 51.5403, 'lon': 0.127, 'name': 'Becontree'},
+        {'lat': 51.5504, 'lon': -0.1642, 'name': 'Belsize Park'},
+        {'lat': 51.527, 'lon': -0.0549, 'name': 'Bethnal Green'},
+        {'lat': 51.512, 'lon': -0.1031, 'name': 'Blackfriars'},
+        {'lat': 51.5867, 'lon': -0.0417, 'name': 'Blackhorse Road'},
+        {'lat': 51.5079, 'lon': -0.0066, 'name': 'Blackwall'},
+        {'lat': 51.5142, 'lon': -0.1494, 'name': 'Bond Street'},
+        {'lat': 51.5011, 'lon': -0.0943, 'name': 'Borough'},
+        {'lat': 51.4956, 'lon': -0.325, 'name': 'Boston Manor'},
+        {'lat': 51.6071, 'lon': -0.1243, 'name': 'Bounds Green'},
+        {'lat': 51.5273, 'lon': -0.0208, 'name': 'Bow Church'},
+        {'lat': 51.5269, 'lon': -0.0247, 'name': 'Bow Road'},
+        {'lat': 51.5766, 'lon': -0.2136, 'name': 'Brent Cross'},
+        {'lat': 51.5248, 'lon': -0.0119, 'name': 'Bromley-By-Bow'},
+        {'lat': 51.6028, 'lon': -0.2641, 'name': 'Burnt Oak'},
+        {'lat': 51.5481, 'lon': -0.1188, 'name': 'Caledonian Road'},
+        {'lat': 51.5392, 'lon': -0.1426, 'name': 'Camden Town'},
+        {'lat': 51.5051, 'lon': -0.0209, 'name': 'Canary Wharf'},
+        {'lat': 51.5113, 'lon': -0.0904, 'name': 'Cannon Street'},
+        {'lat': 51.6078, 'lon': -0.2947, 'name': 'Canons Park'},
+        {'lat': 51.5441, 'lon': -0.1538, 'name': 'Chalk Farm'},
+        {'lat': 51.5185, 'lon': -0.1111, 'name': 'Chancery Lane'},
+        {'lat': 51.508, 'lon':-0.1247, 'name': 'Charing Cross'},
+        {'lat': 51.6177, 'lon': 0.0755, 'name': 'Chigwell'},
+        {'lat': 51.4946, 'lon': -0.2678, 'name': 'Chiswick Park'},
+        {'lat': 51.4618, 'lon': -0.1384, 'name': 'Clapham Common'},
+        {'lat': 51.4649, 'lon': -0.1299, 'name': 'Clapham North'},
+        {'lat': 51.4527, 'lon': -0.148, 'name': 'Clapham South'},
+        {'lat': 51.5955, 'lon': -0.2502, 'name': 'Colindale'},
+        {'lat': 51.418, 'lon': -0.1778, 'name': 'Colliers Wood'},
+        {'lat': 51.5129, 'lon': -0.1243, 'name': 'Covent Garden'},
+        {'lat': 51.4957, 'lon': -0.0144, 'name': 'Crossharbour & London Arena'},
+        {'lat': 51.5095, 'lon': 0.0276, 'name': 'Custom House'},
+        {'lat': 51.5085, 'lon': 0.064, 'name': 'Cyprus'},
+        {'lat': 51.5443, 'lon': 0.1655, 'name': 'Dagenham East'},
+        {'lat': 51.5417, 'lon': 0.1469, 'name': 'Dagenham Heathway'},
+        {'lat': 51.5223, 'lon': -0.0173, 'name': 'Devons Road'},
+        {'lat': 51.552, 'lon': -0.2387, 'name': 'Dollis Hill'},
+        {'lat': 51.5152, 'lon': -0.3017, 'name': 'Ealing Broadway'},
+        {'lat': 51.5101, 'lon': -0.2882, 'name': 'Ealing Common'},
+        {'lat': 51.492, 'lon': -0.1973, 'name': "Earl's Court"},
+        {'lat': 51.5765, 'lon': -0.397, 'name': 'Eastcote'},
+        {'lat': 51.5168, 'lon': -0.2474, 'name': 'East Acton'},
+        {'lat': 51.5874, 'lon': -0.165, 'name': 'East Finchley'},
+        {'lat': 51.5394, 'lon': 0.0518, 'name': 'East Ham'},
+        {'lat': 51.5093, 'lon': -0.0021, 'name': 'East India'},
+        {'lat': 51.6137, 'lon': -0.275, 'name': 'Edgware'},
+        {'lat': 51.5199, 'lon': -0.1679, 'name': 'Edgware Road (B)'},
+        {'lat': 51.4943, 'lon': -0.1001, 'name': 'Elephant & Castle'},
+        {'lat': 51.5496, 'lon': 0.1977, 'name': 'Elm Park'},
+        {'lat': 51.5074, 'lon': -0.1223, 'name': 'Embankment'},
+        {'lat': 51.5282, 'lon': -0.1337, 'name': 'Euston'},
+        {'lat': 51.526, 'lon': -0.1359, 'name': 'Euston Square'},
+        {'lat': 51.596, 'lon': 0.0912, 'name': 'Fairlop'},
+        {'lat': 51.5203, 'lon': -0.1053, 'name': 'Farringdon'},
+        {'lat': 51.6012, 'lon': -0.1932, 'name': 'Finchley Central'},
+        {'lat': 51.5472, 'lon': -0.1803, 'name': 'Finchley Road'},
+        {'lat': 51.5642, 'lon': -0.1065, 'name': 'Finsbury Park'},
+        {'lat': 51.4804, 'lon': -0.195, 'name': 'Fulham Broadway'},
+        {'lat': 51.5096, 'lon': 0.0716, 'name': 'Gallions Reach'},
+        {'lat': 51.5765, 'lon': 0.0663, 'name': 'Gants Hill'},
+        {'lat': 51.4945, 'lon': -0.1829, 'name': 'Gloucester Road'},
+        {'lat': 51.5724, 'lon': -0.1941, 'name': 'Golders Green'},
+        {'lat': 51.5018, 'lon': -0.2267, 'name': 'Goldhawk Road'},
+        {'lat': 51.5205, 'lon': -0.1347, 'name': 'Goodge Street'},
+        {'lat': 51.6132, 'lon': 0.0923, 'name': 'Grange Hill'},
+        {'lat': 51.5238, 'lon': -0.1439, 'name': 'Great Portland Street'},
+        {'lat': 51.5423, 'lon': -0.3456, 'name': 'Greenford'},
+        {'lat': 51.5067, 'lon': -0.1428, 'name': 'Green Park'},
+        {'lat': 51.4915, 'lon': -0.2754, 'name': 'Gunnersbury'},
+        {'lat': 51.603, 'lon': 0.0933, 'name': 'Hainault'},
+        {'lat': 51.4936, 'lon': -0.2251, 'name': 'Hammersmith'},
+        {'lat': 51.5568, 'lon': -0.178, 'name': 'Hampstead'},
+        {'lat': 51.5302, 'lon': -0.2933, 'name': 'Hanger Lane'},
+        {'lat': 51.5362, 'lon': -0.2575, 'name': 'Harlesden'},
+        {'lat': 51.5925, 'lon': -0.3351, 'name': 'Harrow & Wealdston'},
+        {'lat': 51.5793, 'lon': -0.3366, 'name': 'Harrow-on-the-Hill'},
+        {'lat': 51.4669, 'lon': -0.4227, 'name': 'Hatton Cross'},
+        {'lat': 51.4713, 'lon': -0.4524, 'name': 'Heathrow Terminals 1, 2 & 3'},
+        {'lat': 51.4598, 'lon': -0.4476, 'name': 'Heathrow Terminal 4'},
+        {'lat': 51.5829, 'lon': -0.2259, 'name': 'Hendon Central'},
+        {'lat': 51.5033, 'lon': -0.0215, 'name': 'Heron Quays'},
+        {'lat': 51.5009, 'lon': -0.1925, 'name': 'High Street Kensington'},
+        {'lat': 51.546, 'lon': -0.104, 'name': 'Highbury & Islington'},
+        {'lat': 51.5777, 'lon': -0.1458, 'name': 'Highgate'},
+        {'lat': 51.5538, 'lon': -0.4499, 'name': 'Hillingdon'},
+        {'lat': 51.5174, 'lon': -0.12, 'name': 'Holborn'},
+        {'lat': 51.5075, 'lon': -0.206, 'name': 'Holland Park'},
+        {'lat': 51.5526, 'lon': -0.1132, 'name': 'Holloway Road'},
+        {'lat': 51.5539, 'lon': 0.2184, 'name': 'Hornchurch'},
+        {'lat': 51.4713, 'lon': -0.3665, 'name': 'Hounslow Central'},
+        {'lat': 51.4733, 'lon':-0.3564, 'name': 'Hounslow East'},
+        {'lat': 51.4734, 'lon': -0.3855, 'name': 'Hounslow West'},
+        {'lat': 51.5027, 'lon': -0.1527, 'name': 'Hyde Park Corner'},
+        {'lat': 51.5619, 'lon': -0.4421, 'name': 'Ickenham'},
+        {'lat': 51.4871, 'lon': -0.0101, 'name': 'Island Gardens'},
+        {'lat': 51.4884, 'lon': -0.1053, 'name': 'Kennington'},
+        {'lat': 51.5304, 'lon': -0.225, 'name': 'Kensal Green'},
+        {'lat': 51.4983, 'lon': -0.2106, 'name': 'Kensington (Olympia)'},
+        {'lat': 51.5507, 'lon': -0.1402, 'name': 'Kentish Town'},
+        {'lat': 51.5816, 'lon': -0.3162, 'name': 'Kenton'},
+        {'lat': 51.477, 'lon': -0.285, 'name': 'Kew Gardens'},
+        {'lat': 51.5471, 'lon':-0.2047, 'name': 'Kilburn'},
+        {'lat': 51.5351, 'lon': -0.1939, 'name': 'Kilburn Park'},
+        {'lat': 51.5846, 'lon': -0.2786, 'name': 'Kingsbury'},
+        {'lat':51.5308, 'lon': -0.1238, 'name': "King's Cross St. Pancras"},
+        {'lat': 51.5015, 'lon': -0.1607, 'name': 'Knightsbridge'},
+        {'lat': 51.5172, 'lon': -0.2107, 'name': 'Ladbroke Grove'},
+        {'lat': 51.4991, 'lon': -0.1115, 'name': 'Lambeth North'},
+        {'lat': 51.5119, 'lon': -0.1756, 'name': 'Lancaster Gate'},
+        {'lat': 51.5139, 'lon': -0.2172, 'name': 'Latimer Road'},
+        {'lat': 51.5113, 'lon': -0.1281, 'name': 'Leicester Square'},
+        {'lat': 51.5566, 'lon': -0.0053, 'name': 'Leyton'},
+        {'lat': 51.5683, 'lon': 0.0083, 'name': 'Leytonstone'},
+        {'lat': 51.5123, 'lon': -0.0396, 'name': 'Limehouse'},
+        {'lat': 51.5178, 'lon': -0.0823, 'name': 'Liverpool Street'},
+        {'lat': 51.5052, 'lon': -0.0864, 'name': 'London Bridge'},
+        {'lat': 51.53, 'lon': -0.1854, 'name': 'Maida Vale'},
+        {'lat': 51.5712, 'lon': -0.0958, 'name': 'Manor House'},
+        {'lat': 51.5122, 'lon': -0.094, 'name': 'Mansion House'},
+        {'lat': 51.5136, 'lon': -0.1586, 'name': 'Marble Arch'},
+        {'lat': 51.5225, 'lon': -0.1631, 'name': 'Marylebone'},
+        {'lat': 51.5249, 'lon': -0.0332, 'name': 'Mile End'},
+        {'lat': 51.6082, 'lon': -0.2103, 'name': 'Mill Hill East'},
+        {'lat': 51.5108, 'lon': -0.0863, 'name': 'Monument'},
+        {'lat': 51.5186, 'lon': -0.0886, 'name': 'Moorgate'},
+        {'lat': 51.6294, 'lon': -0.432, 'name': 'Moor Park'},
+        {'lat': 51.4022, 'lon': -0.1948, 'name': 'Morden'},
+        {'lat': 51.5342, 'lon': -0.1387, 'name': 'Mornington Crescent'},
+        {'lat': 51.4902, 'lon': -0.0145, 'name': 'Mudchute'},
+        {'lat': 51.5542, 'lon': -0.2503, 'name': 'Neasden'},
+        {'lat': 51.5756, 'lon': 0.0899, 'name': 'Newbury Park'},
+        {'lat': 51.4995, 'lon': -0.3142, 'name': 'Northfields'},
+        {'lat': 51.5483, 'lon': -0.3687, 'name': 'Northolt'},
+        {'lat': 51.5784, 'lon': -0.3184, 'name': 'Northwick Park'},
+        {'lat': 51.6111, 'lon': -0.424, 'name': 'Northwood'},
+        {'lat': 51.6004, 'lon': -0.4092, 'name': 'Northwood Hills'},
+        {'lat': 51.5237, 'lon': -0.2597, 'name': 'North Acton'},
+        {'lat': 51.5175, 'lon': -0.2887, 'name': 'North Ealing'},
+        {'lat': 51.5846, 'lon': -0.3626, 'name': 'North Harrow'},
+        {'lat': 51.5621, 'lon': -0.3034, 'name': 'North Wembley'},
+        {'lat': 51.5094, 'lon': -0.1967, 'name': 'Notting Hill Gate'},
+        {'lat': 51.5263, 'lon': -0.0873, 'name': 'Old Street'},
+        {'lat': 51.4813, 'lon': -0.3522, 'name': 'Osterley'},
+        {'lat': 51.4819, 'lon': -0.113, 'name': 'Oval'},
+        {'lat':51.515, 'lon': -0.1415, 'name': 'Oxford Circus'},
+        {'lat': 51.5154, 'lon': -0.1755, 'name': 'Paddington'},
+        {'lat': 51.527, 'lon': -0.2841, 'name': 'Park Royal'},
+        {'lat': 51.4753, 'lon': -0.2011, 'name': 'Parsons Green'},
+        {'lat': 51.5366, 'lon': -0.3232, 'name': 'Perivale'},
+        {'lat': 51.5098, 'lon': -0.1342, 'name': 'Picadilly Circus'},
+        {'lat': 51.4893, 'lon': -0.1334, 'name': 'Pimlico'},
+        {'lat': 51.5926, 'lon': -0.3805, 'name': 'Pinner'},
+        {'lat': 51.5313, 'lon': 0.0172, 'name': 'Plaistow'},
+        {'lat': 51.5077, 'lon': -0.0173, 'name': 'Poplar'},
+        {'lat': 51.572, 'lon': -0.2954, 'name': 'Preston Road'},
+        {'lat': 51.5093, 'lon': 0.0336, 'name': 'Prince Regent'},
+        {'lat': 51.4682, 'lon': -0.2089, 'name': 'Putney Bridge'},
+        {'lat': 51.5341, 'lon': -0.2047, 'name': "Queen's Park"},
+        {'lat': 51.5942, 'lon': -0.2861, 'name': 'Queensbury'},
+        {'lat': 51.5107, 'lon': -0.1877, 'name': 'Queensway'},
+        {'lat': 51.4942, 'lon': -0.2359, 'name': 'Ravenscourt Park'},
+        {'lat': 51.5753, 'lon': -0.3714, 'name': 'Rayners Lane'},
+        {'lat': 51.5763, 'lon': 0.0454, 'name': 'Redbridge'},
+        {'lat': 51.5234, 'lon': -0.1466, 'name': "Regent's Park"},
+        {'lat': 51.4633, 'lon': -0.3013, 'name': 'Richmond'},
+        {'lat': 51.6171, 'lon': 0.0439, 'name': 'Roding Valley'},
+        {'lat': 51.501, 'lon': -0.0525, 'name': 'Rotherhithe'},
+        {'lat': 51.5084, 'lon': 0.0465, 'name': 'Royal Albert'},
+        {'lat': 51.519, 'lon': -0.188, 'name': 'Royal Oak'},
+        {'lat': 51.5091, 'lon': 0.0181, 'name': 'Royal Victoria'},
+        {'lat': 51.5715, 'lon': -0.4213, 'name': 'Ruislip'},
+        {'lat': 51.5732, 'lon': -0.4125, 'name': 'Ruislip Manor'},
+        {'lat': 51.523, 'lon': -0.1244, 'name': 'Russell Square'},
+        {'lat': 51.5822, 'lon': -0.0749, 'name': 'Seven Sisters'},
+        {'lat': 51.5117, 'lon': -0.056, 'name': 'Shadwell'},
+        {'lat': 51.5046, 'lon': -0.2187, 'name': "Shepherd's Bush (C)"},
+        {'lat': 51.5058, 'lon': -0.2265, 'name': "Shepherd's Bush (H)"},
+        {'lat': 51.5227, 'lon': -0.0708, 'name': 'Shoreditch'},
+        {'lat': 51.4924, 'lon': -0.1565, 'name': 'Sloane Square'},
+        {'lat': 51.5808, 'lon': 0.0216, 'name': 'Snaresbrook'},
+        {'lat': 51.4454, 'lon': -0.2066, 'name': 'Southfields'},
+        {'lat': 51.5011, 'lon': -0.3072, 'name': 'South Ealing'},
+        {'lat': 51.5646, 'lon': -0.3521, 'name': 'South Harrow'},
+        {'lat': 51.4941, 'lon': -0.1738, 'name': 'South Kensington'},
+        {'lat': 51.5701, 'lon': -0.3081, 'name': 'South Kenton'},
+        {'lat': 51.5007, 'lon': -0.0191, 'name': 'South Quay'},
+        {'lat': 51.5569, 'lon': -0.3988, 'name': 'South Ruislip'},
+        {'lat': 51.4154, 'lon': -0.1919, 'name': 'South Wimbledon'},
+        {'lat': 51.5917, 'lon': 0.0275, 'name': 'South Woodford'},
+        {'lat': 51.495, 'lon': -0.2459, 'name': 'Stamford Brook'},
+        {'lat': 51.6194, 'lon': -0.3028, 'name': 'Stanmore'},
+        {'lat': 51.5221, 'lon': -0.047, 'name': 'Stepney Green'},
+        {'lat': 51.4723, 'lon': -0.123, 'name': 'Stockwell'},
+        {'lat': 51.5439, 'lon': -0.2759, 'name': 'Stonebridge Park'},
+        {'lat': 51.5416, 'lon': -0.0042, 'name': 'Stratford'},
+        {'lat': 51.4994, 'lon': -0.1335, 'name': "St. James's Park"},
+        {'lat': 51.5347, 'lon': -0.174, 'name': "St. John's Wood"},
+        {'lat': 51.5146, 'lon': -0.0973, 'name': "St. Paul's"},
+        {'lat': 51.5569, 'lon': -0.3366, 'name': 'Sudbury Hill'},
+        {'lat': 51.5507, 'lon': -0.3156, 'name': 'Sudbury Town'},
+        {'lat': 51.4933, 'lon': -0.0478, 'name': 'Surrey Quays'},
+        {'lat': 51.5432, 'lon': -0.1738, 'name': 'Swiss Cottage'},
+        {'lat': 51.5111, 'lon': -0.1141, 'name': 'Temple'},
+        {'lat': 51.4361, 'lon': -0.1598, 'name': 'Tooting Bec'},
+        {'lat': 51.4275, 'lon': -0.168, 'name': 'Tooting Broadway'},
+        {'lat': 51.5165, 'lon': -0.131, 'name': 'Tottenham Court Road'},
+        {'lat': 51.5882, 'lon': -0.0594, 'name': 'Tottenham Hale'},
+        {'lat': 51.5106, 'lon': -0.0743, 'name': 'Tower Gateway'},
+        {'lat': 51.5098, 'lon': -0.0766, 'name': 'Tower Hill'},
+        {'lat': 51.5567, 'lon': -0.1374, 'name': 'Tufnell Park'},
+        {'lat': 51.4951, 'lon': -0.2547, 'name': 'Turnham Green'},
+        {'lat': 51.5904, 'lon': -0.1028, 'name': 'Turnpike Lane'},
+        {'lat': 51.559, 'lon': 0.251, 'name': 'Upminster'},
+        {'lat': 51.5582, 'lon': 0.2343, 'name': 'Upminster Bridge'},
+        {'lat': 51.5385, 'lon': 0.1014, 'name': 'Upney'},
+        {'lat': 51.5352, 'lon':0.0343, 'name': 'Upton Park'},
+        {'lat': 51.5463, 'lon': -0.4786, 'name': 'Uxbridge'},
+        {'lat': 51.4861, 'lon': -0.1253, 'name': 'Vauxhall'},
+        {'lat': 51.4965, 'lon': -0.1447, 'name': 'Victoria'},
+        {'lat': 51.583, 'lon': -0.0195, 'name': 'Walthamstow Central'},
+        {'lat': 51.5775, 'lon': 0.0288, 'name': 'Wanstead'},
+        {'lat': 51.5043, 'lon': -0.0558, 'name': 'Wapping'},
+        {'lat': 51.5247, 'lon': -0.1384, 'name': 'Warren Street'},
+        {'lat': 51.5235, 'lon': -0.1835, 'name': 'Warwick Avenue'},
+        {'lat': 51.5036, 'lon': -0.1143, 'name': 'Waterloo'},
+        {'lat':51.5519, 'lon': -0.2963, 'name': 'Wembley Central'},
+        {'lat': 51.5635, 'lon': -0.2795, 'name': 'Wembley Park'},
+        {'lat': 51.521, 'lon': -0.2011, 'name': 'Westbourne Park'},
+        {'lat': 51.5097, 'lon': -0.0265, 'name': 'Westferry'},
+        {'lat': 51.501, 'lon': -0.1254, 'name': 'Westminster'},
+        {'lat': 51.518, 'lon': -0.2809, 'name': 'West Acton'},
+        {'lat': 51.4872, 'lon': -0.1953, 'name': 'West Brompton'},
+        {'lat': 51.6095, 'lon': -0.1883, 'name': 'West Finchley'},
+        {'lat': 51.5287, 'lon': 0.0056, 'name': 'West Ham'},
+        {'lat': 51.5469, 'lon': -0.1906, 'name': 'West Hampstead'},
+        {'lat': 51.5795, 'lon': -0.3533, 'name': 'West Harrow'},
+        {'lat': 51.507, 'lon': -0.0203, 'name': 'West India Quay'},
+        {'lat': 51.4907, 'lon': -0.2065, 'name': 'West Kensington'},
+        {'lat': 51.5696, 'lon': -0.4376, 'name': 'West Ruislip'},
+        {'lat': 51.5194, 'lon': -0.0612, 'name': 'Whitechapel'},
+        {'lat': 51.512, 'lon': -0.2239, 'name': 'White City'},
+        {'lat': 51.5492, 'lon': -0.2215, 'name': 'Willesden Green'},
+        { 'lat': 51.5326, 'lon': -0.2478, 'name': 'Willesden Junction'},
+        {'lat': 51.4214, 'lon': -0.2064, 'name': 'Wimbledon'},
+        {'lat': 51.4343, 'lon': -0.1992, 'name': 'Wimbledon Park'},
+        {'lat': 51.607, 'lon': 0.0341, 'name': 'Woodford'},
+        {'lat': 51.6179, 'lon': -0.1856, 'name': 'Woodside Park'},
+        {'lat': 51.5975, 'lon': -0.1097, 'name': 'Wood Green'},
+        {'lat': 51.4627, 'lon': -0.1145, 'name': 'Brixton'},
+        {'lat': 51.6736, 'lon': -0.607, 'name': 'Amersham'},
+        {'lat': 51.4979, 'lon': -0.0637, 'name': 'Bermondsey'},
+        {'lat': 51.7052, 'lon': -0.611, 'name': 'Chesham'},
+        {'lat': 51.6679, 'lon': -0.561, 'name': 'Chalfont & Latimer'},
+        {'lat': 51.6543, 'lon': -0.5183, 'name': 'Chorleywood'},
+        {'lat': 51.6404, 'lon': -0.4733, 'name': 'Rickmansworth'},
+        {'lat': 51.647, 'lon': -0.4412, 'name': 'Croxley'},
+        {'lat': 51.6573, 'lon': -0.4177, 'name': 'Watford'},
+        {'lat': 51.5606, 'lon': -0.4103, 'name': 'Ruislip Gardens'},
+        {'lat': 51.6503, 'lon': -0.1943, 'name': 'High Barnet'},
+        {'lat': 51.6302, 'lon': -0.1791, 'name': 'Totteridge & Whetstone'},
+        {'lat': 51.6517, 'lon': -0.1496, 'name': 'Cockfosters'},
+        {'lat': 51.6476, 'lon': -0.1318, 'name': 'Oakwood'},
+        {'lat': 51.6322, 'lon': -0.128, 'name': 'Southgate'},
+        {'lat': 51.6937, 'lon': 0.1139, 'name': 'Epping'},
+        {'lat':51.6717, 'lon': 0.1033, 'name': 'Theydon Bois'},
+        {'lat': 51.6455, 'lon': 0.0838, 'name': 'Debden'},
+        {'lat': 51.6412, 'lon': 0.0558, 'name': 'Loughton'},
+        {'lat': 51.6266, 'lon': 0.0471, 'name': 'Buckhurst Hill'},
+        {'lat': 51.5343, 'lon': -0.0139, 'name': 'Pudding Mill Lane'},
+        {'lat': 51.501, 'lon': -0.1052, 'name': 'Southwark'},
+        {'lat': 51.4982, 'lon': -0.0502, 'name': 'Canada Water'},
+        {'lat': 51.5147, 'lon': 0.0082, 'name': 'Canning Town'},
+        {'lat': 51.5005, 'lon': 0.0039, 'name': 'North Greenwich'},
+        {'lat': 51.4827, 'lon': -0.0096, 'name': 'Cutty Sark'},
+        {'lat': 51.4781, 'lon': -0.0149, 'name': 'Greenwich'},
+        {'lat': 51.474, 'lon': -0.0216, 'name': 'Deptford Bridge'},
+        {'lat': 51.4693, 'lon': -0.0174, 'name': 'Elverson Road'},
+        {'lat': 51.4657, 'lon': -0.0142, 'name': 'Lewisham'},
+        {'lat': 51.4767, 'lon': -0.0327, 'name': 'New Cross'},
+        {'lat': 51.4757, 'lon': -0.0402, 'name': 'New Cross Gate'}]
+        
+        import requests
+        import json
+
+        url = "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCbl67m1ACMuKyTCKOklvSD7cVai79PAqM"
+
+        payload={}
+        headers = {}
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        #print(response.text)
+
+        parse = json.loads(response.text) 
+        my_lat = parse['location']['lat'] 
+        my_lon = parse['location']['lng'] 
+
+        distances = [] 
+        for station in stations:
+            distance = haversine(my_lat, my_lon, station['lat'], station['lon'])
+            distances.append(distance)
+
+        # Find the nearest stations
+        nearest_stations = []
+        for i in range(1):  
+            index = distances.index(min(distances))
+            station = stations[index]
+            nearest_stations.append(station)
+            distances.pop(index)
+
+        # Print the nearest stations
+        for station in nearest_stations:
+            
+            nearest = nearest_stations[0]["name"]
+            self.label.text =  f"You are at {nearest}."
+            
+        import requests 
+        import json
+        url = f"https://api.tfl.gov.uk/StopPoint/Search?query={nearest}&modes=tube"
+
+        payload={}
+        headers = {
+        'Authorization': 'Basic CjBkM2NhOTkyY2YwMjRhMWI5MzNhZDM2ZTQyY2E0MmQ5OjdjYjQ3ODUzNzlkZTQxZTVhNjUzZTk4NDk5MGJiODYx'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = json.loads(response.text)
+        print(data)
+        
+        try:
+            stationId =data['matches'][0]['id']
+        except IndexError:
+             incorrectSpelling_label = Label(text="Incorrect, try again")
+             self.window.add_widget(incorrectSpelling_label)
+             return 
+             #sys.exit()
+             
+        url2 = f"https://api.tfl.gov.uk/StopPoint/{stationId}/arrivals"
+
+
+        payload2={}
+        headers2 = {
+        'Authorization': 'Basic CjBkM2NhOTkyY2YwMjRhMWI5MzNhZDM2ZTQyY2E0MmQ5OjdjYjQ3ODUzNzlkZTQxZTVhNjUzZTk4NDk5MGJiODYx'
+        }
+
+        responseId = requests.request("GET", url2, headers=headers2, data=payload2)
+        data2 = json.loads(responseId.text)
+
+        sorted_arrivals = sorted(data2, key=lambda x: x['timeToStation'])
+
+        for eachTimeToStation in sorted_arrivals:
+            time  = eachTimeToStation['timeToStation'] // 60
+            stationName = eachTimeToStation['stationName']
+            destination = eachTimeToStation['towards']
+            line = eachTimeToStation['lineName']
+            destination = eachTimeToStation['towards']
+            platform = eachTimeToStation['platformName']
+            stationName = eachTimeToStation['stationName']
+            destination = eachTimeToStation['towards']
+            line = eachTimeToStation['lineName']
+            destination = eachTimeToStation['towards']
+            platform = eachTimeToStation['platformName']
+
+            if time == 0:
+                displayTime = "due"
+            else:
+                displayTime = f"{time}"
+
+            if time == 1:
+                displayTime = f"in {time} min"
+            elif time == 0:
+                displayTime = "due"
+            elif time > 0:
+                displayTime = f"in {time} mins"
+            else:
+                displayTime = f"{time} mins"
+        
+
+            #station_label = Label(text=f"{stationName} - {line}: {displayTime}")
+            #self.layout.add_widget(station_label)
+           
+
+    
+if __name__ == "__main__":
+    Main().run()
+
+
+
+
+from kivy.app import App 
+from kivy.uix.boxlayout import BoxLayout
+from kivy_garden.mapview import MapView, MapSource, MapMarker
+
+class Map(App):
+    def build(self):
+        print(MapSource.providers.keys())
+        box_layout = BoxLayout()
+        map_view = MapView(lat=51.591134347808065, lon=-0.09932547270686361, zoom=13)
+        map_view.map_source = "osm"
+        map_marker = MapMarker()
+        map_marker.lat = 51.591134347808065
+        map_marker.lon = -0.09932547270686361
+        map_marker.source = "mapMarker.png"
+        map_marker.size = (45, 45)
+        map_view.add_widget(map_marker)
+        box_layout.add_widget(map_view)
+        return box_layout
+    
+    
+if __name__ == "__main__":
+    Map().run()
+
+
+
+import requests
+from kivy.app import App
+from kivy.graphics import Color, Rectangle
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+
+# Replace with your own TFL API credentials
+APP_ID = "0d3ca992cf024a1b933ad36e42ca42d9"
+APP_KEY = "7cb4785379de41e5a653e984990bb861"
+
+# Make a GET request to the TFL API
+url = f"https://api.tfl.gov.uk/line/mode/tube/status?app_id={APP_ID}&app_key={APP_KEY}"
+response = requests.get(url)
+
+# Parse the response and extract the relevant information
+statuses = {}
+for line in response.json():
+    name = line["name"]
+    status = line["lineStatuses"][0]["statusSeverityDescription"]
+    statuses[name] = status
+
+class TubeButton(BoxLayout):
+    def __init__(self, name, status, **kwargs):
+        super(TubeButton, self).__init__(**kwargs)
+        self.orientation = "vertical"
+        self.color = (0, 0, 0, 1)
+        self.font_size = "20sp"
+        with self.canvas:
+            Color(*self.get_color(name))
+            self.rect = Rectangle(pos=self.pos, size=self.size)
+        self.bind(pos=self.update_rect, size=self.update_rect)
+
+        # Add a label for the name of the line
+        name_label = Label(text=name, color=(0, 0, 0, 1), font_size="20sp")
+        if name == "Northern":
+            name_label.color = (1,1,1,1)
+        else:
+            name_label.color = (0,0,0,1)
+            
+        self.add_widget(name_label)
+
+        # Add a label for the status of the line
+        status_label = Label(text=status, color=(0, 0, 0, 1), font_size="20sp")
+        if name == "Northern":
+            status_label.color = (1, 1, 1, 1)  # white text for Northern line
+        else:
+            status_label.color = (0, 0, 0, 1)  # black text for other lines
+        self.add_widget(status_label)
+
+    def update_rect(self, *args):
+        self.rect.pos = self.pos
+        self.rect.size = self.size
+
+    def get_color(self, name):
+        # Return the color of the tube line based on its name
+        # You can modify this dictionary to add or change colors
+        color_map = {
+            "Bakerloo": (0.6, 0.3, 0),
+            "Central": (1, 0, 0),
+            "Circle": (1, 0.8, 0),
+            "District": (0, 1, 0),
+            "Hammersmith & City": (0.9, 0.5, 0.9),
+            "Jubilee": (0.5, 0.5, 0.5),
+            "Metropolitan": (0.5, 0, 0.5),
+            "Northern": (0, 0, 0),
+            "Piccadilly": (0, 0, 1),
+            "Victoria": (0, 1, 1),
+            "Waterloo & City": (0, 0.6, 0.4),
+        }
+        return color_map.get(name, (1, 1, 1))
+
+class StatusScreen(BoxLayout):
+    def __init__(self, **kwargs):
+        super(StatusScreen, self).__init__(**kwargs)
+        self.orientation = "vertical"
+
+        # Display the information on the screen
+        for name, status in statuses.items():
+            button = TubeButton(name, status)
+            self.add_widget
+
+        # Display the information on the screen
+        for name, status in statuses.items():
+            button = TubeButton(name, status)
+            self.add_widget(button)
+
+class TubeStatusApp(App):
+    def build(self):
+        return StatusScreen()
+
+if __name__ == "__main__":
+    TubeStatusApp().run()
+
+
+
+
+
+
+from kivy.app import App 
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+import sqlite3
+
+class Oyster(App):
+    def build(self):
+        self.window = GridLayout()
+        self.window.cols = 1
+        
+        self.option = Label(text="Welcome to the place to create your account")
+        self.window.add_widget(self.option)
+        
+        self.username_label = Label(text="Username:")
+        self.window.add_widget(self.username_label)
+
+        self.username_input = TextInput(multiline=False)
+        self.window.add_widget(self.username_input)
+
+        self.password_label = Label(text="Password:")
+        self.window.add_widget(self.password_label)
+
+        self.password_input = TextInput(multiline=False, password=True)
+        self.window.add_widget(self.password_input)
+
+        self.button = Button(text='SUBMIT')
+        self.button.bind(on_press=self.handle_submit)
+        self.window.add_widget(self.button)
+        
+        self.message_label = Label(text="")
+        self.window.add_widget(self.message_label)
+        
+        return self.window
+    
+    def handle_submit(self, instance):
+        username = self.username_input.text
+        password = self.password_input.text
+        db_file = "oyster_cards.db"
+
+        # Connect to the database
+        conn = sqlite3.connect(db_file)
+        c = conn.cursor()
+
+        # Check if the users table exists, and create it if it doesn't
+        c.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='users'")
+        if c.fetchone()[0] == 0:
+            c.execute("CREATE TABLE users (username TEXT, password TEXT)")
+
+        if self.username_input.text and self.password_input.text:
+            if self.option.text == "s":
+                # Sign in
+                username = self.username_input.text
+                password = self.password_input.text
+                
+                # Check if the user exists in the database
+                c.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+                if c.fetchone():
+                    # Authentication successful, retrieve the balance
+                    balance_label = Label(text="Your Oyster card balance is £25.00")
+                    self.window.add_widget(balance_label)
+                else:
+                    # Authentication failed, display an error message
+                    error_label = Label(text="Error: invalid username or password")
+                    self.window.add_widget(error_label)
+            elif self.option.text == "c":
+                # Create account
+                username = self.username_input.text
+                password = self.password_input.text
+                
+                # Check if the username already exists in the database
+                c.execute("SELECT * FROM users WHERE username = ?", (username,))
+                if c.fetchone():
+                    # Username already exists, display an error message
+                    error_label = Label(text="Error: username already exists")
+                    self.window.add_widget(error_label)
+                else:
+                    # Insert the new user into the database
+                    c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+                    conn.commit()
+                    
+                    # Display a success message
+                    success_label = Label(text="Account created successfully")
+                    self.window.add_widget(success_label)
+            elif self.option.text == "e":
+                # Exit
+                App.get_running_app().stop()
+        else:
+            # Missing username or password, display an error message
+            error_label = Label(text="Error: please enter a username and password")
+            self.window.add_widget(error_label)
+            
+        self.message_label.text = "Account created successfully"
+
+if __name__ == "__main__":
+    Oyster().run()
+
+
+
+
+
+import requests
+import json
+import sqlite3
+
+db_file = "oyster_cards.db"
+app_id = "0d3ca992cf024a1b933ad36e42ca42d9"
+app_key = "7cb4785379de41e5a653e984990bb861"
+
+# Connect to the database
+conn = sqlite3.connect(db_file)
+c = conn.cursor()
+
+# Check if the users table exists, and create it if it doesn't
+c.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='users'")
+if c.fetchone()[0] == 0:
+    c.execute("CREATE TABLE users (username TEXT, password TEXT)")
+
+# Prompt the user to sign in or create an account
+print("Welcome to the Oyster card balance checker.")
+while True:
+    action = input("Do you want to sign in (s), create an account (c), or exit (e)? ")
+    if action == "s":
+        username = input("Enter your username: ")
+        password = input("Enter your password: ")
+        c.execute("SELECT count(*) FROM users WHERE username = ? AND password = ?", (username, password))
+        if c.fetchone()[0] == 1:
+            print("Sign in successful.")
+            break
+        else:
+            print("Incorrect username or password.")
+    elif action == "c":
+        username = input("Enter a username: ")
+        password = input("Enter a password: ")
+        c.execute("INSERT INTO users VALUES (?, ?)", (username, password))
+        conn.commit()
+        print("Account created.")
+    elif action == "e":
+        print("Goodbye!")
+        conn.close()
+        exit()
+    else:
+        print("Invalid choice. Please try again.")
+
+# Prompt the user for the Oyster card number
+card_number = input("Enter the Oyster card number: ")
+
+# Make the API request to retrieve the balance and journey history
+api_endpoint = f"https://api.tfl.gov.uk/Oyster/Usage/{card_number}"
+params = {"app_id": app_id, "app_key": app_key}
+response = requests.get(api_endpoint, params=params)
+data = json.loads(response.text)
+balance = data["balance"]
+journeys = json.dumps(data["journeys"])
+
+# Insert the data into the database
+c.execute("INSERT INTO oyster_cards VALUES (?, ?, ?)", (card_number, balance, journeys))
+conn.commit()
+
+# Retrieve the data for the specified card number and print it to the console
+c.execute("SELECT balance, journeys FROM oyster_cards WHERE card_number = ?", (card_number,))
+row = c.fetchone()
+if row is None:
+    print("Card number not found in database.")
+else:
+    balance = row[0]
+    journeys = json.loads(row[1])
+
+    print("Your balance is:", balance)
+    print("Your last journeys are:")
+    for journey in journeys:
+        print(journey["fromStation"]["name"], "to", journey["toStation"]["name"], "on", journey["journeyStartDateTime"])
+
+# Close the database connection
+conn.close()
+
+
+
+from kivy.app import App 
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label 
+from kivy.uix.image import Image 
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput 
+from kivy.core.window import Window
+from kivy.uix.boxlayout import BoxLayout
+
+
+
+
+
+
+class Tfl(App):
+    def build(self): 
+        self.window = GridLayout()
+        self.window.cols = 1 
+        
+        self.window.add_widget(Image(source="underground.png"))
+        
+        self.destination = Label(text="Where would you like to go?")
+        self.window.add_widget(self.destination)
+        
+        
+        self.user = TextInput(multiline=False)
+        self.window.add_widget(self.user)
+        
+        
+        self.button = Button(text="SHOW ARRIVALS") 
+        self.button.bind(on_press=self.callBack)
+        self.window.add_widget(self.button)
+        
+
+        
+        Window.clearcolor = (1,0,0,1)
+        
+        return self.window
+    
+        
+    def callBack(self, instance):
+        import requests 
+        import json 
+        import sys
+
+       
+
+        url = f"https://api.tfl.gov.uk/StopPoint/Search?query={self.user.text}&modes=tube"
+
+        payload={}
+        headers = {
+        'Authorization': 'Basic CjBkM2NhOTkyY2YwMjRhMWI5MzNhZDM2ZTQyY2E0MmQ5OjdjYjQ3ODUzNzlkZTQxZTVhNjUzZTk4NDk5MGJiODYx'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = json.loads(response.text)
+
+        try:
+            stationId =data['matches'][0]['id']
+        except IndexError:
+             incorrectSpelling_label = Label(text="Incorrect, try again")
+             self.window.add_widget(incorrectSpelling_label)
+             return 
+             #sys.exit()
+
+        if not data['matches']:
+            wrongStation_label = Label(text="This station does not exist!")
+            self.window.add_widget(wrongStation_label)
+            return 
+
+        url2 = f"https://api.tfl.gov.uk/StopPoint/{stationId}/arrivals"
+
+
+        payload2={}
+        headers2 = {
+        'Authorization': 'Basic CjBkM2NhOTkyY2YwMjRhMWI5MzNhZDM2ZTQyY2E0MmQ5OjdjYjQ3ODUzNzlkZTQxZTVhNjUzZTk4NDk5MGJiODYx'
+        }
+
+        responseId = requests.request("GET", url2, headers=headers2, data=payload2)
+        data2 = json.loads(responseId.text)
+
+        sorted_arrivals = sorted(data2, key=lambda x: x['timeToStation'])
+
+        for eachTimeToStation in sorted_arrivals:
+            time  = eachTimeToStation['timeToStation'] // 60
+            stationName = eachTimeToStation['stationName']
+            destination = eachTimeToStation['towards']
+            line = eachTimeToStation['lineName']
+            destination = eachTimeToStation['towards']
+            platform = eachTimeToStation['platformName']
+            stationName = eachTimeToStation['stationName']
+            destination = eachTimeToStation['towards']
+            line = eachTimeToStation['lineName']
+            destination = eachTimeToStation['towards']
+            platform = eachTimeToStation['platformName']
+
+            if time == 0:
+                displayTime = "due"
+            else:
+                displayTime = f"{time}"
+
+            if time == 1:
+                displayTime = f"in {time} min"
+            elif time == 0:
+                displayTime = "due"
+            elif time > 0:
+                displayTime = f"in {time} mins"
+            else:
+                displayTime = f"{time} mins"
+        
+
+            station_label = Label(text=f"{stationName} - {line}: {displayTime}")
+            self.window.add_widget(station_label)
+
+  
+
+        
+        
+        
+     
+    
+
+if __name__ == "__main__":
+    Tfl().run()
+
+
+
+import requests
+
+# Replace with your own TFL API credentials
+APP_ID = "0d3ca992cf024a1b933ad36e42ca42d9"
+APP_KEY = "7cb4785379de41e5a653e984990bb861"
+
+# Replace with the station and line of your choice
+STATION_CODE = "940GZZLUEUS"
+LINE_CODE = "victoria"
+
+# Make a GET request to the TFL API
+url = f"https://api.tfl.gov.uk/Line/{LINE_CODE}/Arrivals?stopPointId={STATION_CODE}&app_id={APP_ID}&app_key={APP_KEY}"
+response = requests.get(url)
+
+# Parse the response and extract the relevant information
+departures = []
+for train in response.json():
+    departures.append({
+        "line": train["lineName"],
+        "destination": train["destinationName"],
+        "time": train["expectedArrival"].split("T")[1][:5]
+    })
+
+# Display the information on the departure board
+for departure in departures:
+    print(f"{departure['line']} to {departure['destination']} - {departure['time']}")
+
+
+
+
+
+import requests
+import json
+import datetime
+
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+
+appId = '0d3ca992cf024a1b933ad36e42ca42d9'
+appKey = '7cb4785379de41e5a653e984990bb861'
+
+class JourneyFinder(BoxLayout):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.orientation = "vertical"
+
+        self.station_start_input = TextInput(hint_text="Enter the station you want to travel from")
+        self.destination_input = TextInput(hint_text="Enter your destination station")
+        self.find_journey_button = Button(text="Find Journey", on_press=self.find_journey)
+
+        self.add_widget(self.station_start_input)
+        self.add_widget(self.destination_input)
+        self.add_widget(self.find_journey_button)
+
+        self.output_label = Label(text="")
+
+        self.add_widget(self.output_label)
+
+    def find_journey(self, instance):
+        try:
+            station_start = self.station_start_input.text
+            destination = self.destination_input.text
+
+            self.output_label.text = f"You have selected {station_start}\nNow fetching route, please wait..."
+
+            get_request = requests.get(f"https://api.tfl.gov.uk/journey/journeyresults/{station_start}/to/{destination}&app_id={appId}&app_key={appKey}")
+            data = get_request.json()
+            start = data['fromLocationDisambiguation']['disambiguationOptions'][0]['parameterValue']
+            end = data['toLocationDisambiguation']['disambiguationOptions'][0]['parameterValue']
+
+            journey = requests.get(f"https://api.tfl.gov.uk/journey/journeyresults/{start}/to/{end}&app_id={appId}&app_key={appKey}")
+            journey_json = journey.json()
+            journey_time = journey_json['journeys'][0]['duration']
+
+            output_text = f"Journey is {journey_time} minutes\n\nThis is the journey...\n\n"
+            route = journey_json['journeys'][0]['legs']
+            for information in route:
+                output_text += f"From {information['arrivalPoint']['commonName']}\n"
+                output_text += f"{information['instruction']['detailed']}\n"
+                output_text += f"Arrive at {information['arrivalPoint']['commonName']}\n"
+                disruptions = information['isDisrupted']
+                if disruptions == True:
+                    for disruption in information['disruptions']:
+                        output_text += "\n=======Disruption:=======\n"
+                        output_text += f"{disruption['description']}\n"
+                else:
+                    output_text += "No disruptions available\n"
+                output_text += "\n"
+
+            self.output_label.text = output_text
+
+        except KeyError:
+            self.output_label.text = "Error (KeyError)! Please try again!"
+
+class JourneyFinderApp(App):
+
+    def build(self):
+        return JourneyFinder()
+
+if __name__ == '__main__':
+    JourneyFinderApp().run()
+
+
+
+
+
+import pandas as pd
+import networkx as nx
+import requests
+import sqlite3 
+import time 
+from datetime import datetime 
+
+
+
+
+# TfL API credentials
+APP_ID = "0d3ca992cf024a1b933ad36e42ca42d9"
+APP_KEY = "7cb4785379de41e5a653e984990bb861"
+
+# Read station data
+stations = pd.read_csv("underground_stations.csv")
+lines = pd.read_csv("london.lines.csv")
+
+# Create a dictionary of lines keyed by line number
+line_dict = {line["line"]: line["name"] for _, line in lines.iterrows()}
+
+# Create graph with nodes corresponding to stations
+G = nx.Graph()
+for index, row in stations.iterrows():
+    G.add_node(row["name"])
+
+# Read edge data
+edges = pd.read_csv("london.connections.csv")
+
+# Add edges to graph with weight equal to time taken to travel between stations
+for index, row in edges.iterrows():
+    station1 = stations.loc[stations["id"] == row["station1"]]["name"].values[0]
+    station2 = stations.loc[stations["id"] == row["station2"]]["name"].values[0]
+    weight = row["time"]
+    line = row["line"]
+    G.add_edge(station1, station2, weight=weight, line=line)
+
+# Find shortest path between two given stations
+
+start = input("Enter start ")
+end = input("Enter destination ")
+shortest_path = nx.shortest_path(G, start, end, weight="weight")
+
+# Create list of (station, line) tuples for the shortest path
+path_with_lines = []
+for i in range(len(shortest_path)-1):
+    station1 = shortest_path[i]
+    station2 = shortest_path[i+1]
+    line_number = G[station1][station2]["line"]
+    line_name = line_dict[line_number]
+    path_with_lines.append((station1, line_number, line_name))
+
+# Check for disruptions on each line used in the shortest path
+disruptions = []
+for station1, station2, line_name in path_with_lines:
+    url = f"https://api.tfl.gov.uk/Line/{line_name}/Status"
+    params = {"app_id": APP_ID, "app_key": APP_KEY}
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        status = response.json()[0]["lineStatuses"][0]["statusSeverityDescription"]
+        
+        if status != "Good Service" :
+            disruptions.append(line_name)
+            
+        if status == "Minor Delays":
+            print("delays")
+
+# Print the results with line changes and disruptions indicated
+print(f"Start at {shortest_path[0]} on {line_dict[G[shortest_path[0]][shortest_path[1]]['line']]} line")
+
+for i in range(len(path_with_lines)-1):
+    station1, station2, line_name = path_with_lines[i]
+    next_line_name = path_with_lines[i+1][2]
+    if line_name != next_line_name:
+        print(f"Change from {line_name} line to {next_line_name} line at {shortest_path[i+1]}")
+    print(f"Continue on {line_name} line to {shortest_path[i+1]}")
+    if line_name in disruptions:
+        print(f"WARNING: {line_name} line has disruptions.")
+print(f"Arrive at {shortest_path[-1]}")
+print(f"The time taken to travel the shortest path is: {nx.shortest_path_length(G, start, end, weight='weight')}")
+
+import sqlite3
+
+# Connect to the database (create new one if not exists)
+conn = sqlite3.connect('journeys.db')
+
+# Create a new table in the database to store journey details
+conn.execute('''CREATE TABLE IF NOT EXISTS journeys
+             (start_station TEXT, end_station TEXT, journey_date TEXT)''')
+
+# Find shortest path between two given stations
+startPoint = start 
+endPoint = end 
+shortest_path = nx.shortest_path(G, startPoint, endPoint, weight="weight")
+journey_time = nx.shortest_path_length(G, startPoint, endPoint, weight='weight')
+journey_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+# Insert the journey details into the table
+conn.execute("INSERT INTO journeys (start_station, end_station, journey_date) VALUES (?, ?, ?)", (start, end, journey_date))
+
+# Commit changes to the database
+conn.commit()
+
+# Close the database connection
+conn.close()
+
+
+
+
+
+from kivy.app import App 
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label 
+from kivy.uix.image import Image 
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput 
+from kivy.core.window import Window
+from kivy.uix.boxlayout import BoxLayout
+import requests
+import json
+import math
+
+class Arrivals(App):
+    def build(self):
+        self.window = GridLayout()
+        self.window.cols = 1
+        
+        self.arrivals = Label(text="Here are the arrivals")
+        self.window.add_widget(self.arrivals)
+        
+        self.stationLabel = Label(text="")
+        self.window.add_widget(self.stationLabel)
+        
+        self.show = Label(text="")
+        self.window.add_widget(self.show)
+        
+        self.callBack()
+        
+        return self.window
+    
+    def callBack(self):
+        def haversine(lat1, lon1, lat2, lon2):
+            R = 6371  # Earth's radius in kilometers
+            dLat = math.radians(lat2 - lat1)
+            dLon = math.radians(lon2 - lon1)
+            lat1 = math.radians(lat1)
+            lat2 = math.radians(lat2)
+            a = math.sin(dLat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dLon/2)**2
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+            d = R * c
+            return d
+
+       
+
+        stations = [{'lat': 51.5028, 'lon': -0.2801, 'name': 'Acton Town'},
+        {'lat': 51.5143, 'lon': -0.0755, 'name': 'Aldgate'},
+        {'lat': 51.5154, 'lon': -0.0726, 'name': 'Aldgate East'},
+        {'lat': 51.5107, 'lon': -0.013, 'name': 'All Saints'},
+        {'lat': 51.5407, 'lon': -0.2997, 'name': 'Alperton'},
+        {'lat': 51.5322, 'lon': -0.1058, 'name': 'Angel'},
+        {'lat': 51.5653, 'lon': -0.1353, 'name': 'Archway'},
+        {'lat': 51.6164, 'lon': -0.1331, 'name': 'Arnos Grove'},
+
+        {'lat': 51.5586, 'lon': -0.1059, 'name': 'Arsenal'},
+        {'lat': 51.5226, 'lon': -0.1571, 'name': 'Baker Street'},
+        {'lat': 51.4431, 'lon': -0.1525, 'name': 'Balham'},
+        {'lat': 51.5133, 'lon': -0.0886, 'name': 'Bank'},
+        {'lat': 51.5204, 'lon': -0.0979, 'name': 'Barbican'},
+        {'lat': 51.5396, 'lon': 0.081, 'name': 'Barking'},
+        {'lat': 51.5856, 'lon': 0.0887, 'name': 'Barkingside'},
+        {'lat': 51.4905, 'lon': -0.2139, 'name': 'Barons Court'},
+        {'lat': 51.5148, 'lon': 0.0613, 'name': 'Beckton'} ,
+        {'lat': 51.5087, 'lon': 0.055, 'name': 'Beckton Park'},
+        {'lat': 51.5403, 'lon': 0.127, 'name': 'Becontree'},
+        {'lat': 51.5504, 'lon': -0.1642, 'name': 'Belsize Park'},
+        {'lat': 51.527, 'lon': -0.0549, 'name': 'Bethnal Green'},
+        {'lat': 51.512, 'lon': -0.1031, 'name': 'Blackfriars'},
+        {'lat': 51.5867, 'lon': -0.0417, 'name': 'Blackhorse Road'},
+        {'lat': 51.5079, 'lon': -0.0066, 'name': 'Blackwall'},
+        {'lat': 51.5142, 'lon': -0.1494, 'name': 'Bond Street'},
+        {'lat': 51.5011, 'lon': -0.0943, 'name': 'Borough'},
+        {'lat': 51.4956, 'lon': -0.325, 'name': 'Boston Manor'},
+        {'lat': 51.6071, 'lon': -0.1243, 'name': 'Bounds Green'},
+        {'lat': 51.5273, 'lon': -0.0208, 'name': 'Bow Church'},
+        {'lat': 51.5269, 'lon': -0.0247, 'name': 'Bow Road'},
+        {'lat': 51.5766, 'lon': -0.2136, 'name': 'Brent Cross'},
+        {'lat': 51.5248, 'lon': -0.0119, 'name': 'Bromley-By-Bow'},
+        {'lat': 51.6028, 'lon': -0.2641, 'name': 'Burnt Oak'},
+        {'lat': 51.5481, 'lon': -0.1188, 'name': 'Caledonian Road'},
+        {'lat': 51.5392, 'lon': -0.1426, 'name': 'Camden Town'},
+        {'lat': 51.5051, 'lon': -0.0209, 'name': 'Canary Wharf'},
+        {'lat': 51.5113, 'lon': -0.0904, 'name': 'Cannon Street'},
+        {'lat': 51.6078, 'lon': -0.2947, 'name': 'Canons Park'},
+        {'lat': 51.5441, 'lon': -0.1538, 'name': 'Chalk Farm'},
+        {'lat': 51.5185, 'lon': -0.1111, 'name': 'Chancery Lane'},
+        {'lat': 51.508, 'lon':-0.1247, 'name': 'Charing Cross'},
+        {'lat': 51.6177, 'lon': 0.0755, 'name': 'Chigwell'},
+        {'lat': 51.4946, 'lon': -0.2678, 'name': 'Chiswick Park'},
+        {'lat': 51.4618, 'lon': -0.1384, 'name': 'Clapham Common'},
+        {'lat': 51.4649, 'lon': -0.1299, 'name': 'Clapham North'},
+        {'lat': 51.4527, 'lon': -0.148, 'name': 'Clapham South'},
+        {'lat': 51.5955, 'lon': -0.2502, 'name': 'Colindale'},
+        {'lat': 51.418, 'lon': -0.1778, 'name': 'Colliers Wood'},
+        {'lat': 51.5129, 'lon': -0.1243, 'name': 'Covent Garden'},
+        {'lat': 51.4957, 'lon': -0.0144, 'name': 'Crossharbour & London Arena'},
+        {'lat': 51.5095, 'lon': 0.0276, 'name': 'Custom House'},
+        {'lat': 51.5085, 'lon': 0.064, 'name': 'Cyprus'},
+        {'lat': 51.5443, 'lon': 0.1655, 'name': 'Dagenham East'},
+        {'lat': 51.5417, 'lon': 0.1469, 'name': 'Dagenham Heathway'},
+        {'lat': 51.5223, 'lon': -0.0173, 'name': 'Devons Road'},
+        {'lat': 51.552, 'lon': -0.2387, 'name': 'Dollis Hill'},
+        {'lat': 51.5152, 'lon': -0.3017, 'name': 'Ealing Broadway'},
+        {'lat': 51.5101, 'lon': -0.2882, 'name': 'Ealing Common'},
+        {'lat': 51.492, 'lon': -0.1973, 'name': "Earl's Court"},
+        {'lat': 51.5765, 'lon': -0.397, 'name': 'Eastcote'},
+        {'lat': 51.5168, 'lon': -0.2474, 'name': 'East Acton'},
+        {'lat': 51.5874, 'lon': -0.165, 'name': 'East Finchley'},
+        {'lat': 51.5394, 'lon': 0.0518, 'name': 'East Ham'},
+        {'lat': 51.5093, 'lon': -0.0021, 'name': 'East India'},
+        {'lat': 51.6137, 'lon': -0.275, 'name': 'Edgware'},
+        {'lat': 51.5199, 'lon': -0.1679, 'name': 'Edgware Road (B)'},
+        {'lat': 51.4943, 'lon': -0.1001, 'name': 'Elephant & Castle'},
+        {'lat': 51.5496, 'lon': 0.1977, 'name': 'Elm Park'},
+        {'lat': 51.5074, 'lon': -0.1223, 'name': 'Embankment'},
+        {'lat': 51.5282, 'lon': -0.1337, 'name': 'Euston'},
+        {'lat': 51.526, 'lon': -0.1359, 'name': 'Euston Square'},
+        {'lat': 51.596, 'lon': 0.0912, 'name': 'Fairlop'},
+        {'lat': 51.5203, 'lon': -0.1053, 'name': 'Farringdon'},
+        {'lat': 51.6012, 'lon': -0.1932, 'name': 'Finchley Central'},
+        {'lat': 51.5472, 'lon': -0.1803, 'name': 'Finchley Road'},
+        {'lat': 51.5642, 'lon': -0.1065, 'name': 'Finsbury Park'},
+        {'lat': 51.4804, 'lon': -0.195, 'name': 'Fulham Broadway'},
+        {'lat': 51.5096, 'lon': 0.0716, 'name': 'Gallions Reach'},
+        {'lat': 51.5765, 'lon': 0.0663, 'name': 'Gants Hill'},
+        {'lat': 51.4945, 'lon': -0.1829, 'name': 'Gloucester Road'},
+        {'lat': 51.5724, 'lon': -0.1941, 'name': 'Golders Green'},
+        {'lat': 51.5018, 'lon': -0.2267, 'name': 'Goldhawk Road'},
+        {'lat': 51.5205, 'lon': -0.1347, 'name': 'Goodge Street'},
+        {'lat': 51.6132, 'lon': 0.0923, 'name': 'Grange Hill'},
+        {'lat': 51.5238, 'lon': -0.1439, 'name': 'Great Portland Street'},
+        {'lat': 51.5423, 'lon': -0.3456, 'name': 'Greenford'},
+        {'lat': 51.5067, 'lon': -0.1428, 'name': 'Green Park'},
+        {'lat': 51.4915, 'lon': -0.2754, 'name': 'Gunnersbury'},
+        {'lat': 51.603, 'lon': 0.0933, 'name': 'Hainault'},
+        {'lat': 51.4936, 'lon': -0.2251, 'name': 'Hammersmith'},
+        {'lat': 51.5568, 'lon': -0.178, 'name': 'Hampstead'},
+        {'lat': 51.5302, 'lon': -0.2933, 'name': 'Hanger Lane'},
+        {'lat': 51.5362, 'lon': -0.2575, 'name': 'Harlesden'},
+        {'lat': 51.5925, 'lon': -0.3351, 'name': 'Harrow & Wealdston'},
+        {'lat': 51.5793, 'lon': -0.3366, 'name': 'Harrow-on-the-Hill'},
+        {'lat': 51.4669, 'lon': -0.4227, 'name': 'Hatton Cross'},
+        {'lat': 51.4713, 'lon': -0.4524, 'name': 'Heathrow Terminals 1, 2 & 3'},
+        {'lat': 51.4598, 'lon': -0.4476, 'name': 'Heathrow Terminal 4'},
+        {'lat': 51.5829, 'lon': -0.2259, 'name': 'Hendon Central'},
+        {'lat': 51.5033, 'lon': -0.0215, 'name': 'Heron Quays'},
+        {'lat': 51.5009, 'lon': -0.1925, 'name': 'High Street Kensington'},
+        {'lat': 51.546, 'lon': -0.104, 'name': 'Highbury & Islington'},
+        {'lat': 51.5777, 'lon': -0.1458, 'name': 'Highgate'},
+        {'lat': 51.5538, 'lon': -0.4499, 'name': 'Hillingdon'},
+        {'lat': 51.5174, 'lon': -0.12, 'name': 'Holborn'},
+        {'lat': 51.5075, 'lon': -0.206, 'name': 'Holland Park'},
+        {'lat': 51.5526, 'lon': -0.1132, 'name': 'Holloway Road'},
+        {'lat': 51.5539, 'lon': 0.2184, 'name': 'Hornchurch'},
+        {'lat': 51.4713, 'lon': -0.3665, 'name': 'Hounslow Central'},
+        {'lat': 51.4733, 'lon':-0.3564, 'name': 'Hounslow East'},
+        {'lat': 51.4734, 'lon': -0.3855, 'name': 'Hounslow West'},
+        {'lat': 51.5027, 'lon': -0.1527, 'name': 'Hyde Park Corner'},
+        {'lat': 51.5619, 'lon': -0.4421, 'name': 'Ickenham'},
+        {'lat': 51.4871, 'lon': -0.0101, 'name': 'Island Gardens'},
+        {'lat': 51.4884, 'lon': -0.1053, 'name': 'Kennington'},
+        {'lat': 51.5304, 'lon': -0.225, 'name': 'Kensal Green'},
+        {'lat': 51.4983, 'lon': -0.2106, 'name': 'Kensington (Olympia)'},
+        {'lat': 51.5507, 'lon': -0.1402, 'name': 'Kentish Town'},
+        {'lat': 51.5816, 'lon': -0.3162, 'name': 'Kenton'},
+        {'lat': 51.477, 'lon': -0.285, 'name': 'Kew Gardens'},
+        {'lat': 51.5471, 'lon':-0.2047, 'name': 'Kilburn'},
+        {'lat': 51.5351, 'lon': -0.1939, 'name': 'Kilburn Park'},
+        {'lat': 51.5846, 'lon': -0.2786, 'name': 'Kingsbury'},
+        {'lat':51.5308, 'lon': -0.1238, 'name': "King's Cross St. Pancras"},
+        {'lat': 51.5015, 'lon': -0.1607, 'name': 'Knightsbridge'},
+        {'lat': 51.5172, 'lon': -0.2107, 'name': 'Ladbroke Grove'},
+        {'lat': 51.4991, 'lon': -0.1115, 'name': 'Lambeth North'},
+        {'lat': 51.5119, 'lon': -0.1756, 'name': 'Lancaster Gate'},
+        {'lat': 51.5139, 'lon': -0.2172, 'name': 'Latimer Road'},
+        {'lat': 51.5113, 'lon': -0.1281, 'name': 'Leicester Square'},
+        {'lat': 51.5566, 'lon': -0.0053, 'name': 'Leyton'},
+        {'lat': 51.5683, 'lon': 0.0083, 'name': 'Leytonstone'},
+        {'lat': 51.5123, 'lon': -0.0396, 'name': 'Limehouse'},
+        {'lat': 51.5178, 'lon': -0.0823, 'name': 'Liverpool Street'},
+        {'lat': 51.5052, 'lon': -0.0864, 'name': 'London Bridge'},
+        {'lat': 51.53, 'lon': -0.1854, 'name': 'Maida Vale'},
+        {'lat': 51.5712, 'lon': -0.0958, 'name': 'Manor House'},
+        {'lat': 51.5122, 'lon': -0.094, 'name': 'Mansion House'},
+        {'lat': 51.5136, 'lon': -0.1586, 'name': 'Marble Arch'},
+        {'lat': 51.5225, 'lon': -0.1631, 'name': 'Marylebone'},
+        {'lat': 51.5249, 'lon': -0.0332, 'name': 'Mile End'},
+        {'lat': 51.6082, 'lon': -0.2103, 'name': 'Mill Hill East'},
+        {'lat': 51.5108, 'lon': -0.0863, 'name': 'Monument'},
+        {'lat': 51.5186, 'lon': -0.0886, 'name': 'Moorgate'},
+        {'lat': 51.6294, 'lon': -0.432, 'name': 'Moor Park'},
+        {'lat': 51.4022, 'lon': -0.1948, 'name': 'Morden'},
+        {'lat': 51.5342, 'lon': -0.1387, 'name': 'Mornington Crescent'},
+        {'lat': 51.4902, 'lon': -0.0145, 'name': 'Mudchute'},
+        {'lat': 51.5542, 'lon': -0.2503, 'name': 'Neasden'},
+        {'lat': 51.5756, 'lon': 0.0899, 'name': 'Newbury Park'},
+        {'lat': 51.4995, 'lon': -0.3142, 'name': 'Northfields'},
+        {'lat': 51.5483, 'lon': -0.3687, 'name': 'Northolt'},
+        {'lat': 51.5784, 'lon': -0.3184, 'name': 'Northwick Park'},
+        {'lat': 51.6111, 'lon': -0.424, 'name': 'Northwood'},
+        {'lat': 51.6004, 'lon': -0.4092, 'name': 'Northwood Hills'},
+        {'lat': 51.5237, 'lon': -0.2597, 'name': 'North Acton'},
+        {'lat': 51.5175, 'lon': -0.2887, 'name': 'North Ealing'},
+        {'lat': 51.5846, 'lon': -0.3626, 'name': 'North Harrow'},
+        {'lat': 51.5621, 'lon': -0.3034, 'name': 'North Wembley'},
+        {'lat': 51.5094, 'lon': -0.1967, 'name': 'Notting Hill Gate'},
+        {'lat': 51.5263, 'lon': -0.0873, 'name': 'Old Street'},
+        {'lat': 51.4813, 'lon': -0.3522, 'name': 'Osterley'},
+        {'lat': 51.4819, 'lon': -0.113, 'name': 'Oval'},
+        {'lat':51.515, 'lon': -0.1415, 'name': 'Oxford Circus'},
+        {'lat': 51.5154, 'lon': -0.1755, 'name': 'Paddington'},
+        {'lat': 51.527, 'lon': -0.2841, 'name': 'Park Royal'},
+        {'lat': 51.4753, 'lon': -0.2011, 'name': 'Parsons Green'},
+        {'lat': 51.5366, 'lon': -0.3232, 'name': 'Perivale'},
+        {'lat': 51.5098, 'lon': -0.1342, 'name': 'Picadilly Circus'},
+        {'lat': 51.4893, 'lon': -0.1334, 'name': 'Pimlico'},
+        {'lat': 51.5926, 'lon': -0.3805, 'name': 'Pinner'},
+        {'lat': 51.5313, 'lon': 0.0172, 'name': 'Plaistow'},
+        {'lat': 51.5077, 'lon': -0.0173, 'name': 'Poplar'},
+        {'lat': 51.572, 'lon': -0.2954, 'name': 'Preston Road'},
+        {'lat': 51.5093, 'lon': 0.0336, 'name': 'Prince Regent'},
+        {'lat': 51.4682, 'lon': -0.2089, 'name': 'Putney Bridge'},
+        {'lat': 51.5341, 'lon': -0.2047, 'name': "Queen's Park"},
+        {'lat': 51.5942, 'lon': -0.2861, 'name': 'Queensbury'},
+        {'lat': 51.5107, 'lon': -0.1877, 'name': 'Queensway'},
+        {'lat': 51.4942, 'lon': -0.2359, 'name': 'Ravenscourt Park'},
+        {'lat': 51.5753, 'lon': -0.3714, 'name': 'Rayners Lane'},
+        {'lat': 51.5763, 'lon': 0.0454, 'name': 'Redbridge'},
+        {'lat': 51.5234, 'lon': -0.1466, 'name': "Regent's Park"},
+        {'lat': 51.4633, 'lon': -0.3013, 'name': 'Richmond'},
+        {'lat': 51.6171, 'lon': 0.0439, 'name': 'Roding Valley'},
+        {'lat': 51.501, 'lon': -0.0525, 'name': 'Rotherhithe'},
+        {'lat': 51.5084, 'lon': 0.0465, 'name': 'Royal Albert'},
+        {'lat': 51.519, 'lon': -0.188, 'name': 'Royal Oak'},
+        {'lat': 51.5091, 'lon': 0.0181, 'name': 'Royal Victoria'},
+        {'lat': 51.5715, 'lon': -0.4213, 'name': 'Ruislip'},
+        {'lat': 51.5732, 'lon': -0.4125, 'name': 'Ruislip Manor'},
+        {'lat': 51.523, 'lon': -0.1244, 'name': 'Russell Square'},
+        {'lat': 51.5822, 'lon': -0.0749, 'name': 'Seven Sisters'},
+        {'lat': 51.5117, 'lon': -0.056, 'name': 'Shadwell'},
+        {'lat': 51.5046, 'lon': -0.2187, 'name': "Shepherd's Bush (C)"},
+        {'lat': 51.5058, 'lon': -0.2265, 'name': "Shepherd's Bush (H)"},
+        {'lat': 51.5227, 'lon': -0.0708, 'name': 'Shoreditch'},
+        {'lat': 51.4924, 'lon': -0.1565, 'name': 'Sloane Square'},
+        {'lat': 51.5808, 'lon': 0.0216, 'name': 'Snaresbrook'},
+        {'lat': 51.4454, 'lon': -0.2066, 'name': 'Southfields'},
+        {'lat': 51.5011, 'lon': -0.3072, 'name': 'South Ealing'},
+        {'lat': 51.5646, 'lon': -0.3521, 'name': 'South Harrow'},
+        {'lat': 51.4941, 'lon': -0.1738, 'name': 'South Kensington'},
+        {'lat': 51.5701, 'lon': -0.3081, 'name': 'South Kenton'},
+        {'lat': 51.5007, 'lon': -0.0191, 'name': 'South Quay'},
+        {'lat': 51.5569, 'lon': -0.3988, 'name': 'South Ruislip'},
+        {'lat': 51.4154, 'lon': -0.1919, 'name': 'South Wimbledon'},
+        {'lat': 51.5917, 'lon': 0.0275, 'name': 'South Woodford'},
+        {'lat': 51.495, 'lon': -0.2459, 'name': 'Stamford Brook'},
+        {'lat': 51.6194, 'lon': -0.3028, 'name': 'Stanmore'},
+        {'lat': 51.5221, 'lon': -0.047, 'name': 'Stepney Green'},
+        {'lat': 51.4723, 'lon': -0.123, 'name': 'Stockwell'},
+        {'lat': 51.5439, 'lon': -0.2759, 'name': 'Stonebridge Park'},
+        {'lat': 51.5416, 'lon': -0.0042, 'name': 'Stratford'},
+        {'lat': 51.4994, 'lon': -0.1335, 'name': "St. James's Park"},
+        {'lat': 51.5347, 'lon': -0.174, 'name': "St. John's Wood"},
+        {'lat': 51.5146, 'lon': -0.0973, 'name': "St. Paul's"},
+        {'lat': 51.5569, 'lon': -0.3366, 'name': 'Sudbury Hill'},
+        {'lat': 51.5507, 'lon': -0.3156, 'name': 'Sudbury Town'},
+        {'lat': 51.4933, 'lon': -0.0478, 'name': 'Surrey Quays'},
+        {'lat': 51.5432, 'lon': -0.1738, 'name': 'Swiss Cottage'},
+        {'lat': 51.5111, 'lon': -0.1141, 'name': 'Temple'},
+        {'lat': 51.4361, 'lon': -0.1598, 'name': 'Tooting Bec'},
+        {'lat': 51.4275, 'lon': -0.168, 'name': 'Tooting Broadway'},
+        {'lat': 51.5165, 'lon': -0.131, 'name': 'Tottenham Court Road'},
+        {'lat': 51.5882, 'lon': -0.0594, 'name': 'Tottenham Hale'},
+        {'lat': 51.5106, 'lon': -0.0743, 'name': 'Tower Gateway'},
+        {'lat': 51.5098, 'lon': -0.0766, 'name': 'Tower Hill'},
+        {'lat': 51.5567, 'lon': -0.1374, 'name': 'Tufnell Park'},
+        {'lat': 51.4951, 'lon': -0.2547, 'name': 'Turnham Green'},
+        {'lat': 51.5904, 'lon': -0.1028, 'name': 'Turnpike Lane'},
+        {'lat': 51.559, 'lon': 0.251, 'name': 'Upminster'},
+        {'lat': 51.5582, 'lon': 0.2343, 'name': 'Upminster Bridge'},
+        {'lat': 51.5385, 'lon': 0.1014, 'name': 'Upney'},
+        {'lat': 51.5352, 'lon':0.0343, 'name': 'Upton Park'},
+        {'lat': 51.5463, 'lon': -0.4786, 'name': 'Uxbridge'},
+        {'lat': 51.4861, 'lon': -0.1253, 'name': 'Vauxhall'},
+        {'lat': 51.4965, 'lon': -0.1447, 'name': 'Victoria'},
+        {'lat': 51.583, 'lon': -0.0195, 'name': 'Walthamstow Central'},
+        {'lat': 51.5775, 'lon': 0.0288, 'name': 'Wanstead'},
+        {'lat': 51.5043, 'lon': -0.0558, 'name': 'Wapping'},
+        {'lat': 51.5247, 'lon': -0.1384, 'name': 'Warren Street'},
+        {'lat': 51.5235, 'lon': -0.1835, 'name': 'Warwick Avenue'},
+        {'lat': 51.5036, 'lon': -0.1143, 'name': 'Waterloo'},
+        {'lat':51.5519, 'lon': -0.2963, 'name': 'Wembley Central'},
+        {'lat': 51.5635, 'lon': -0.2795, 'name': 'Wembley Park'},
+        {'lat': 51.521, 'lon': -0.2011, 'name': 'Westbourne Park'},
+        {'lat': 51.5097, 'lon': -0.0265, 'name': 'Westferry'},
+        {'lat': 51.501, 'lon': -0.1254, 'name': 'Westminster'},
+        {'lat': 51.518, 'lon': -0.2809, 'name': 'West Acton'},
+        {'lat': 51.4872, 'lon': -0.1953, 'name': 'West Brompton'},
+        {'lat': 51.6095, 'lon': -0.1883, 'name': 'West Finchley'},
+        {'lat': 51.5287, 'lon': 0.0056, 'name': 'West Ham'},
+        {'lat': 51.5469, 'lon': -0.1906, 'name': 'West Hampstead'},
+        {'lat': 51.5795, 'lon': -0.3533, 'name': 'West Harrow'},
+        {'lat': 51.507, 'lon': -0.0203, 'name': 'West India Quay'},
+        {'lat': 51.4907, 'lon': -0.2065, 'name': 'West Kensington'},
+        {'lat': 51.5696, 'lon': -0.4376, 'name': 'West Ruislip'},
+        {'lat': 51.5194, 'lon': -0.0612, 'name': 'Whitechapel'},
+        {'lat': 51.512, 'lon': -0.2239, 'name': 'White City'},
+        {'lat': 51.5492, 'lon': -0.2215, 'name': 'Willesden Green'},
+        { 'lat': 51.5326, 'lon': -0.2478, 'name': 'Willesden Junction'},
+        {'lat': 51.4214, 'lon': -0.2064, 'name': 'Wimbledon'},
+        {'lat': 51.4343, 'lon': -0.1992, 'name': 'Wimbledon Park'},
+        {'lat': 51.607, 'lon': 0.0341, 'name': 'Woodford'},
+        {'lat': 51.6179, 'lon': -0.1856, 'name': 'Woodside Park'},
+        {'lat': 51.5975, 'lon': -0.1097, 'name': 'Wood Green'},
+        {'lat': 51.4627, 'lon': -0.1145, 'name': 'Brixton'},
+        {'lat': 51.6736, 'lon': -0.607, 'name': 'Amersham'},
+        {'lat': 51.4979, 'lon': -0.0637, 'name': 'Bermondsey'},
+        {'lat': 51.7052, 'lon': -0.611, 'name': 'Chesham'},
+        {'lat': 51.6679, 'lon': -0.561, 'name': 'Chalfont & Latimer'},
+        {'lat': 51.6543, 'lon': -0.5183, 'name': 'Chorleywood'},
+        {'lat': 51.6404, 'lon': -0.4733, 'name': 'Rickmansworth'},
+        {'lat': 51.647, 'lon': -0.4412, 'name': 'Croxley'},
+        {'lat': 51.6573, 'lon': -0.4177, 'name': 'Watford'},
+        {'lat': 51.5606, 'lon': -0.4103, 'name': 'Ruislip Gardens'},
+        {'lat': 51.6503, 'lon': -0.1943, 'name': 'High Barnet'},
+        {'lat': 51.6302, 'lon': -0.1791, 'name': 'Totteridge & Whetstone'},
+        {'lat': 51.6517, 'lon': -0.1496, 'name': 'Cockfosters'},
+        {'lat': 51.6476, 'lon': -0.1318, 'name': 'Oakwood'},
+        {'lat': 51.6322, 'lon': -0.128, 'name': 'Southgate'},
+        {'lat': 51.6937, 'lon': 0.1139, 'name': 'Epping'},
+        {'lat':51.6717, 'lon': 0.1033, 'name': 'Theydon Bois'},
+        {'lat': 51.6455, 'lon': 0.0838, 'name': 'Debden'},
+        {'lat': 51.6412, 'lon': 0.0558, 'name': 'Loughton'},
+        {'lat': 51.6266, 'lon': 0.0471, 'name': 'Buckhurst Hill'},
+        {'lat': 51.5343, 'lon': -0.0139, 'name': 'Pudding Mill Lane'},
+        {'lat': 51.501, 'lon': -0.1052, 'name': 'Southwark'},
+        {'lat': 51.4982, 'lon': -0.0502, 'name': 'Canada Water'},
+        {'lat': 51.5147, 'lon': 0.0082, 'name': 'Canning Town'},
+        {'lat': 51.5005, 'lon': 0.0039, 'name': 'North Greenwich'},
+        {'lat': 51.4827, 'lon': -0.0096, 'name': 'Cutty Sark'},
+        {'lat': 51.4781, 'lon': -0.0149, 'name': 'Greenwich'},
+        {'lat': 51.474, 'lon': -0.0216, 'name': 'Deptford Bridge'},
+        {'lat': 51.4693, 'lon': -0.0174, 'name': 'Elverson Road'},
+        {'lat': 51.4657, 'lon': -0.0142, 'name': 'Lewisham'},
+        {'lat': 51.4767, 'lon': -0.0327, 'name': 'New Cross'},
+        {'lat': 51.4757, 'lon': -0.0402, 'name': 'New Cross Gate'}]
+
+        url = "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCbl67m1ACMuKyTCKOklvSD7cVai79PAqM"
+
+        payload={}
+        headers = {}
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        #print(response.text)
+
+        parse = json.loads(response.text) 
+        my_lat = parse['location']['lat'] 
+        my_lon = parse['location']['lng'] 
+
+        distances = [] 
+        for station in stations:
+            distance = haversine(my_lat, my_lon, station['lat'], station['lon'])
+            distances.append(distance)
+
+        # Find the nearest stations
+        nearest_stations = []
+        for i in range(1):  
+            index = distances.index(min(distances))
+            station = stations[index]
+            nearest_stations.append(station)
+            distances.pop(index)
+
+        # Print the nearest stations
+        for station in nearest_stations:
+            
+            nearest = nearest_stations[0]["name"]
+            #self.label.text =  f"You are at {nearest}."
+            
+        
+
+        
+        self.stationLabel.text = f"You are at {nearest}."
+        
+        
+        
+        url = f"https://api.tfl.gov.uk/StopPoint/Search?query={nearest}&modes=tube"
+
+        payload={}
+        headers = {
+        'Authorization': 'Basic CjBkM2NhOTkyY2YwMjRhMWI5MzNhZDM2ZTQyY2E0MmQ5OjdjYjQ3ODUzNzlkZTQxZTVhNjUzZTk4NDk5MGJiODYx'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = json.loads(response.text)
+
+        try:
+            stationId =data['matches'][0]['id']
+        except IndexError:
+             incorrectSpelling_label = Label(text="Incorrect, try again")
+             self.window.add_widget(incorrectSpelling_label)
+             return 
+             #sys.exit()
+
+        if not data['matches']:
+            wrongStation_label = Label(text="This station does not exist!")
+            self.window.add_widget(wrongStation_label)
+            return 
+
+        url2 = f"https://api.tfl.gov.uk/StopPoint/{stationId}/arrivals"
+
+
+        payload2={}
+        headers2 = {
+        'Authorization': 'Basic CjBkM2NhOTkyY2YwMjRhMWI5MzNhZDM2ZTQyY2E0MmQ5OjdjYjQ3ODUzNzlkZTQxZTVhNjUzZTk4NDk5MGJiODYx'
+        }
+
+        responseId = requests.request("GET", url2, headers=headers2, data=payload2)
+        data2 = json.loads(responseId.text)
+
+        sorted_arrivals = sorted(data2, key=lambda x: x['timeToStation'])
+
+        for eachTimeToStation in sorted_arrivals:
+            time  = eachTimeToStation['timeToStation'] // 60
+            stationName = eachTimeToStation['stationName']
+            destination = eachTimeToStation['towards']
+            line = eachTimeToStation['lineName']
+            destination = eachTimeToStation['towards']
+            platform = eachTimeToStation['platformName']
+            stationName = eachTimeToStation['stationName']
+            destination = eachTimeToStation['towards']
+            line = eachTimeToStation['lineName']
+            destination = eachTimeToStation['towards']
+            platform = eachTimeToStation['platformName']
+
+            if time == 0:
+                displayTime = "due"
+            else:
+                displayTime = f"{time}"
+
+            if time == 1:
+                displayTime = f"in {time} min"
+            elif time == 0:
+                displayTime = "due"
+            elif time > 0:
+                displayTime = f"in {time} mins"
+            else:
+                displayTime = f"{time} mins"
+                
+            
+            station_label = Label(text=f"{stationName} - {line}: {displayTime}")
+            self.window.add_widget(station_label)
+                
+            
+
+    
+    
+if __name__=="__main__":
+    Arrivals().run()
+
+
+
+from kivy.app import App 
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label 
+from kivy.uix.image import Image 
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput 
+from kivy.core.window import Window
+from kivy.uix.boxlayout import BoxLayout
+
+
+
+
+
+
+class Tfl(App):
+    def build(self): 
+        self.window = GridLayout()
+        self.window.cols = 1 
+        
+        self.window.add_widget(Image(source="underground.png"))
+        
+        self.destination = Label(text="Where would you like to go?")
+        self.window.add_widget(self.destination)
+        
+        
+        self.user = TextInput(multiline=False)
+        self.window.add_widget(self.user)
+        
+        
+        self.button = Button(text="SHOW ARRIVALS") 
+        self.button.bind(on_press=self.callBack)
+        self.window.add_widget(self.button)
+        
+
+        
+        Window.clearcolor = (1,0,0,1)
+        
+        return self.window
+    
+        
+    def callBack(self, instance):
+        import requests 
+        import json 
+        import sys
+
+       
+
+        url = f"https://api.tfl.gov.uk/StopPoint/Search?query={self.user.text}&modes=tube"
+
+        payload={}
+        headers = {
+        'Authorization': 'Basic CjBkM2NhOTkyY2YwMjRhMWI5MzNhZDM2ZTQyY2E0MmQ5OjdjYjQ3ODUzNzlkZTQxZTVhNjUzZTk4NDk5MGJiODYx'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = json.loads(response.text)
+
+        try:
+            stationId =data['matches'][0]['id']
+        except IndexError:
+             incorrectSpelling_label = Label(text="Incorrect, try again")
+             self.window.add_widget(incorrectSpelling_label)
+             return 
+             #sys.exit()
+
+        if not data['matches']:
+            wrongStation_label = Label(text="This station does not exist!")
+            self.window.add_widget(wrongStation_label)
+            return 
+
+        url2 = f"https://api.tfl.gov.uk/StopPoint/{stationId}/arrivals"
+
+
+        payload2={}
+        headers2 = {
+        'Authorization': 'Basic CjBkM2NhOTkyY2YwMjRhMWI5MzNhZDM2ZTQyY2E0MmQ5OjdjYjQ3ODUzNzlkZTQxZTVhNjUzZTk4NDk5MGJiODYx'
+        }
+
+        responseId = requests.request("GET", url2, headers=headers2, data=payload2)
+        data2 = json.loads(responseId.text)
+
+        sorted_arrivals = sorted(data2, key=lambda x: x['timeToStation'])
+
+        for eachTimeToStation in sorted_arrivals:
+            time  = eachTimeToStation['timeToStation'] // 60
+            stationName = eachTimeToStation['stationName']
+            destination = eachTimeToStation['towards']
+            line = eachTimeToStation['lineName']
+            destination = eachTimeToStation['towards']
+            platform = eachTimeToStation['platformName']
+            stationName = eachTimeToStation['stationName']
+            destination = eachTimeToStation['towards']
+            line = eachTimeToStation['lineName']
+            destination = eachTimeToStation['towards']
+            platform = eachTimeToStation['platformName']
+
+            if time == 0:
+                displayTime = "due"
+            else:
+                displayTime = f"{time}"
+
+            if time == 1:
+                displayTime = f"in {time} min"
+            elif time == 0:
+                displayTime = "due"
+            elif time > 0:
+                displayTime = f"in {time} mins"
+            else:
+                displayTime = f"{time} mins"
+        
+
+            station_label = Label(text=f"{stationName} - {line}: {displayTime}")
+            self.window.add_widget(station_label)
+
+  
+
+        
+        
+        
+     
+    
+
+if __name__ == "__main__":
+    Tfl().run()
+
+
+
+
